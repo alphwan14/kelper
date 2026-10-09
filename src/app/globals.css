@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   Kelper design tokens: "the job ticket"
+   paper · coral stone · ink · Indian-Ocean teal · marker · stamp
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --color-paper: #f5f0e6;
+  --color-paper-2: #ede5d6;
+  --color-stone: #e0d2bb;
+  --color-ink: #141414;
+  --color-ink-2: #3a3731;
+  --color-ink-3: #5e584e;
+  --color-ocean: #0b5563;
+  --color-ocean-deep: #073a44;
+  --color-marker: #ffc233;
+  --color-marker-soft: #ffe39a;
+  --color-stamp: #b2380f;
+  --color-line: rgb(20 20 20 / 0.14);
+  --color-line-strong: rgb(20 20 20 / 0.32);
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  --text-display: clamp(2.75rem, 1.6rem + 5.6vw, 6.5rem);
+  --text-display--line-height: 0.92;
+  --text-display--letter-spacing: -0.035em;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--color-marker);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-ocean);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Highlighter stroke behind a word, drawn on load */
+@utility marker {
+  background-image: linear-gradient(
+    100deg,
+    transparent 0.4%,
+    var(--color-marker) 2%,
+    var(--color-marker) 97%,
+    transparent 99.5%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 0.42em;
+  background-position: 0 88%;
+  padding-inline: 0.06em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+@layer components {
+  /* Mono "form field" label used for section numbers and ticket metadata */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .marker-draw {
+      animation: marker-draw 0.9s var(--ease-out-soft) 0.25s both;
+    }
+  }
+
+  /* Printer's crop marks around an image */
+  /* Marks sit outside the image, aligned with its edges, like on a print proof.
+     Total reach (gap + len) stays under the 16px mobile gutter. */
+  .crop {
+    position: relative;
+    --crop-gap: 4px;
+    --crop-len: 10px;
+    --crop-o: calc(var(--crop-gap) + var(--crop-len));
+  }
+  @media (min-width: 768px) {
+    .crop {
+      --crop-gap: 8px;
+      --crop-len: 18px;
+    }
+  }
+  .crop::before {
+    --ink: linear-gradient(var(--color-ink), var(--color-ink));
+    content: "";
+    position: absolute;
+    inset: calc(var(--crop-o) * -1);
+    pointer-events: none;
+    background:
+      var(--ink) left 0 top var(--crop-o) / var(--crop-len) 1px,
+      var(--ink) left var(--crop-o) top 0 / 1px var(--crop-len),
+      var(--ink) right 0 top var(--crop-o) / var(--crop-len) 1px,
+      var(--ink) right var(--crop-o) top 0 / 1px var(--crop-len),
+      var(--ink) left 0 bottom var(--crop-o) / var(--crop-len) 1px,
+      var(--ink) left var(--crop-o) bottom 0 / 1px var(--crop-len),
+      var(--ink) right 0 bottom var(--crop-o) / var(--crop-len) 1px,
+      var(--ink) right var(--crop-o) bottom 0 / 1px var(--crop-len);
+    background-repeat: no-repeat;
+    opacity: 0.6;
+  }
+  .crop-light::before {
+    --ink: linear-gradient(var(--color-paper), var(--color-paper));
+  }
+
+  /* A docket / job ticket with a perforated tear line */
+  .ticket {
+    position: relative;
+    background: #fffdf8;
+    border: 1px solid var(--color-line-strong);
+    box-shadow: 0 1px 0 rgb(20 20 20 / 0.06), 0 12px 28px -18px rgb(20 20 20 / 0.35);
+  }
+  .perforation {
+    height: 1px;
+    background-image: linear-gradient(90deg, var(--color-line-strong) 50%, transparent 50%);
+    background-size: 10px 1px;
+    position: relative;
+  }
+  .perforation::before,
+  .perforation::after {
+    content: "";
+    position: absolute;
+    top: -9px;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line-strong);
+  }
+  .perforation::before {
+    left: -10px;
+    clip-path: inset(0 0 0 50%);
+  }
+  .perforation::after {
+    right: -10px;
+    clip-path: inset(0 50% 0 0);
+  }
+  .on-stone .perforation::before,
+  .on-stone .perforation::after {
+    background: var(--color-paper-2);
+  }
+
+  /* Rubber stamp */
+  .stamp {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-stamp);
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    padding: 0.35em 0.7em;
+  }
+
+  /* Subtle paper grain for large surfaces */
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0 0.06 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Rule-lined index list */
+  .index-row {
+    border-top: 1px solid var(--color-line);
+  }
+  .index-row:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .prose-kelper p + p {
+    margin-top: 0.85em;
+  }
+}
+
+@keyframes marker-draw {
+  from {
+    background-size: 0% 0.42em;
+  }
+  to {
+    background-size: 100% 0.42em;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.6s var(--ease-out-soft) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print: guides become clean checklists */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .ticket {
+    box-shadow: none;
+  }
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+  }
+}
