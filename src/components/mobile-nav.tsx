@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { business } from "@/config/business";
-import { primaryNav } from "@/content/nav";
+import { primaryNav, quoteHref } from "@/content/nav";
 import { enquiry, telHref, whatsappHref } from "@/lib/contact";
-import { ChatIcon, CloseIcon, MenuIcon, PhoneIcon } from "./icons";
+import { ArrowIcon, ChatIcon, CloseIcon, MenuIcon, PhoneIcon } from "./icons";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -21,6 +21,8 @@ export function MobileNav() {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  const links = [{ href: "/", label: "Home" }, ...primaryNav];
 
   return (
     <div className="lg:hidden">
@@ -38,31 +40,39 @@ export function MobileNav() {
       <div
         id={panelId}
         hidden={!open}
-        className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-paper"
+        className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-paper md:top-[4.5rem]"
       >
-        <nav aria-label="Main" className="px-4 pt-6 pb-10">
+        <nav aria-label="Main" className="px-4 pt-4 pb-10">
           <ul>
-            {primaryNav.map((item, i) => (
+            {links.map((item, i) => (
               <li key={item.href} className="index-row">
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-baseline gap-4 py-4 font-display text-3xl font-bold tracking-tight"
+                  className="flex items-baseline gap-4 py-4 font-display text-[1.75rem] font-bold tracking-tight [font-stretch:87.5%]"
                 >
-                  <span className="label w-6">0{i + 1}</span>
+                  <span className="label w-6">{String(i).padStart(2, "0")}</span>
                   {item.label}
                 </Link>
               </li>
             ))}
           </ul>
           <div className="mt-8 grid gap-3">
+            <Link
+              href={quoteHref}
+              onClick={() => setOpen(false)}
+              className="inline-flex min-h-12 items-center justify-center gap-2 bg-navy px-5 font-semibold text-paper"
+            >
+              Request a quotation <ArrowIcon className="h-4 w-4" />
+            </Link>
             <a
-              href={whatsappHref(enquiry("I have a question."))}
+              href={whatsappHref(enquiry("I have an enquiry."))}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 bg-ink px-5 font-semibold text-paper"
+              className="inline-flex min-h-12 items-center justify-center gap-2 border border-ink px-5 font-semibold"
             >
-              <ChatIcon /> WhatsApp {business.name}
+              <ChatIcon /> WhatsApp
+              <span className="sr-only"> (opens WhatsApp)</span>
             </a>
             <a href={telHref} className="inline-flex min-h-12 items-center justify-center gap-2 border border-ink px-5 font-semibold">
               <PhoneIcon /> Call {business.phone.display}

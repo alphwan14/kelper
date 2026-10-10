@@ -1,33 +1,33 @@
 import type { Metadata } from "next";
-import { pageMetadata } from "@/lib/metadata";
-import { CallAction, WhatsAppAction } from "@/components/actions";
+import { CallAction, QuoteAction, WhatsAppAction } from "@/components/actions";
 import { JsonLd } from "@/components/json-ld";
 import { PageIntro } from "@/components/page-intro";
 import { Photo } from "@/components/photo";
-import { business } from "@/config/business";
+import { activeEmail, business } from "@/config/business";
 import { imageFor } from "@/content/images";
 import { enquiry, telHref, whatsappHref } from "@/lib/contact";
+import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = pageMetadata({
-  title: `Find us: call or WhatsApp ${business.phone.display}`,
-  description: `Contact ${business.name} in ${business.city}. Call or WhatsApp ${business.phone.display} for printing, typing, CVs and online application help.`,
+  title: "Contact Kelper Investments Ltd, Mombasa",
+  description: `Contact ${business.legalName} in ${business.city}. Call or WhatsApp ${business.phone.display} about construction, engineering services or building materials.`,
   path: "/contact",
 });
 
 export default function ContactPage() {
-  const image = imageFor("mombasa");
+  const image = imageFor("coast");
 
   return (
     <>
       <PageIntro
         crumbs={[
           { name: "Home", href: "/" },
-          { name: "Find us", href: "/contact" },
+          { name: "Contact", href: "/contact" },
         ]}
         kicker={`Contact · ${business.city}`}
-        title="Message first. Come in ready."
-        intro={<p>The quickest way to reach us is WhatsApp. Tell us the job and we&rsquo;ll reply with what to bring.</p>}
+        title="Talk to us about your project."
+        intro={<p>Call or WhatsApp for a first conversation. For a quotation, the request form collects everything we need in one message.</p>}
       />
 
       <div className="mx-auto grid max-w-7xl gap-14 px-4 py-14 md:px-8 md:py-20 lg:grid-cols-[1.1fr_0.9fr]">
@@ -35,44 +35,48 @@ export default function ContactPage() {
           <p className="label">Call or WhatsApp</p>
           <a
             href={telHref}
-            className="mt-2 block font-display text-[clamp(2.25rem,1.3rem+4.5vw,4.5rem)] leading-none font-extrabold tracking-[-0.03em] hover:text-ocean"
+            className="mt-2 block font-display text-[clamp(2.25rem,1.3rem+4vw,4.25rem)] leading-none font-extrabold tracking-[-0.02em] [font-stretch:87.5%] hover:text-signal-ink"
           >
             {business.phone.display}
           </a>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <WhatsAppAction message="I have a question.">WhatsApp us</WhatsAppAction>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <QuoteAction />
+            <WhatsAppAction message="I have an enquiry.">WhatsApp us</WhatsAppAction>
             <CallAction>Call now</CallAction>
           </div>
 
           <dl className="mt-14 divide-y divide-line border-y border-line">
+            {activeEmail ? (
+              <div className="grid gap-2 py-6 sm:grid-cols-[12rem_1fr]">
+                <dt className="label pt-1">Email</dt>
+                <dd>
+                  <a href={`mailto:${activeEmail}`} className="text-lg underline underline-offset-4">
+                    {activeEmail}
+                  </a>
+                </dd>
+              </div>
+            ) : null}
             <div className="grid gap-2 py-6 sm:grid-cols-[12rem_1fr]">
-              <dt className="label pt-1">Location</dt>
+              <dt className="label pt-1">Office</dt>
               <dd>
                 <p className="text-lg">
                   {business.streetAddress ? `${business.streetAddress}, ` : ""}
                   {business.city}, Kenya
                 </p>
-                {business.landmark ? <p className="text-ink-3">{business.landmark}</p> : null}
+                {business.postalAddress ? <p className="text-ink-3">{business.postalAddress}</p> : null}
                 {business.mapUrl ? (
-                  <a href={business.mapUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block font-semibold text-ocean underline underline-offset-4">
+                  <a href={business.mapUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block font-semibold text-signal-ink underline underline-offset-4">
                     Open in Google Maps
                   </a>
                 ) : (
-                  <a
-                    href={whatsappHref(enquiry("please send me your location pin so I can find you."))}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-block font-semibold text-ocean underline underline-offset-4"
-                  >
-                    Ask for a location pin on WhatsApp
-                  </a>
+                  <p className="mt-1 text-ink-3">Meetings by appointment. Call or WhatsApp to arrange one.</p>
                 )}
               </dd>
             </div>
-            <div className="grid gap-2 py-6 sm:grid-cols-[12rem_1fr]">
-              <dt className="label pt-1">Opening hours</dt>
-              <dd>
-                {business.hours ? (
+            {business.hours ? (
+              <div className="grid gap-2 py-6 sm:grid-cols-[12rem_1fr]">
+                <dt className="label pt-1">Office hours</dt>
+                <dd>
                   <ul className="space-y-1 text-lg">
                     {business.hours.map((h) => (
                       <li key={h.days} className="flex justify-between gap-6 font-mono sm:max-w-xs">
@@ -83,45 +87,35 @@ export default function ContactPage() {
                       </li>
                     ))}
                   </ul>
-                ) : (
-                  <a
-                    href={whatsappHref(enquiry("what time are you open today?"))}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-ocean underline underline-offset-4"
-                  >
-                    Ask what time we&rsquo;re open today
-                  </a>
-                )}
-              </dd>
-            </div>
-            {business.email ? (
-              <div className="grid gap-2 py-6 sm:grid-cols-[12rem_1fr]">
-                <dt className="label pt-1">Email</dt>
-                <dd>
-                  <a href={`mailto:${business.email}`} className="text-lg underline underline-offset-4">
-                    {business.email}
-                  </a>
                 </dd>
               </div>
             ) : null}
             <div className="grid gap-2 py-6 sm:grid-cols-[12rem_1fr]">
-              <dt className="label pt-1">Before you message</dt>
+              <dt className="label pt-1">In your first message</dt>
               <dd className="text-ink-2">
-                Say what the job is and when you need it. Please don&rsquo;t send ID numbers, KRA PINs or passwords on
-                WhatsApp. Bring them in person.
+                Say what the project or order is, where it is, and when you need it. Drawings, a BoQ or photos help us respond
+                properly.{" "}
+                <a
+                  href={whatsappHref(enquiry("I'd like to send drawings / a BoQ for a quotation."))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-ink underline underline-offset-4"
+                >
+                  Send files on WhatsApp
+                  <span className="sr-only"> (opens WhatsApp)</span>
+                </a>
               </dd>
             </div>
           </dl>
         </div>
 
-        <Photo image={image} aspect="aspect-[3/4]" sizes="(min-width: 1024px) 40vw, 100vw" position="50% 35%" />
+        <Photo image={image} aspect="aspect-[4/5]" sizes="(min-width: 1024px) 40vw, 100vw" position="55% 50%" dimension={`${business.city} · Kenya`} />
       </div>
 
       <JsonLd
         data={breadcrumbSchema([
           { name: "Home", path: "/" },
-          { name: "Find us", path: "/contact" },
+          { name: "Contact", path: "/contact" },
         ])}
       />
     </>

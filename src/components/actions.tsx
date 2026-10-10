@@ -1,15 +1,18 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { business } from "@/config/business";
+import { quoteHref } from "@/content/nav";
 import { enquiry, telHref, whatsappHref } from "@/lib/contact";
-import { ChatIcon, PhoneIcon } from "./icons";
+import { ArrowIcon, ChatIcon, PhoneIcon } from "./icons";
 
-type Variant = "primary" | "secondary" | "ghost" | "inverse";
+type Variant = "primary" | "secondary" | "ghost" | "signal" | "inverse";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-ink text-paper hover:bg-ocean-deep",
+  primary: "bg-navy text-paper hover:bg-navy-deep",
   secondary: "border border-ink text-ink hover:bg-ink hover:text-paper",
   ghost: "text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink px-0!",
-  inverse: "bg-marker text-ink hover:bg-paper",
+  signal: "bg-signal text-navy-deep hover:bg-paper",
+  inverse: "border border-paper/60 text-paper hover:bg-paper hover:text-navy-deep",
 };
 
 export const buttonClass = (variant: Variant = "primary", extra = "") =>
@@ -21,13 +24,22 @@ type ActionProps = {
   children?: ReactNode;
 };
 
+/** The primary call to action everywhere: the structured quotation request. */
+export function QuoteAction({ variant = "primary", className = "", children, type }: ActionProps & { type?: string }) {
+  return (
+    <Link href={type ? `${quoteHref}?type=${type}` : quoteHref} className={buttonClass(variant, className)}>
+      <span>{children ?? "Request a quotation"}</span>
+      <ArrowIcon className="h-4 w-4" />
+    </Link>
+  );
+}
+
 /**
- * WhatsApp enquiry. `message` is the body after "Hello Kelper, ".
- * Keep messages free of sensitive data (IDs, PINs, passwords).
+ * WhatsApp enquiry. `message` is the body after "Hello Kelper Investments Ltd, ".
  */
 export function WhatsAppAction({
   message,
-  variant = "primary",
+  variant = "secondary",
   className = "",
   children,
 }: ActionProps & { message?: string }) {
@@ -39,7 +51,7 @@ export function WhatsAppAction({
       className={buttonClass(variant, className)}
     >
       <ChatIcon />
-      <span>{children ?? "WhatsApp us"}</span>
+      <span>{children ?? "WhatsApp"}</span>
       <span className="sr-only"> (opens WhatsApp)</span>
     </a>
   );

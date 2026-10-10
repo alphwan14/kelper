@@ -1,356 +1,209 @@
-/**
- * Kelper's service catalogue.
- *
- * LAUNCH CHECK: the client hasn't confirmed this list yet. These are the
- * standard services of a Kenyan cybercafé (see docs/kelper-research.md).
- * Before launch, delete anything Kelper doesn't offer. Services marked
- * `needsEquipment` depend on machines the client must confirm they have.
- *
- * Copy rules: no prices, no turnaround promises, no official affiliation.
- */
-
-import type { GuideSlug } from "./guides";
 import type { ImageSlot } from "./images";
 
-export type CategoryId = "print" | "documents" | "careers" | "online" | "study" | "business";
+/**
+ * The three service lines. Every scope item below is a PROPOSED category the
+ * owner must confirm before launch (see docs/owner-questions.md). Delete what
+ * Kelper won't quote for rather than softening it.
+ */
 
-export type Category = {
-  id: CategoryId;
+export type QuoteType = "construction" | "engineering" | "supplies";
+
+export type ScopeGroup = { title: string; items: string[] };
+
+export type ServiceLine = {
+  slug: QuoteType;
+  /** Display name, e.g. in nav and headings */
   name: string;
-  /** One line shown in the directory */
-  line: string;
-};
-
-export const categories: Category[] = [
-  { id: "print", name: "Print, copy & scan", line: "From your phone, flash disk or the original." },
-  { id: "documents", name: "Typing & documents", line: "Handwritten to typed, messy to tidy." },
-  { id: "careers", name: "CVs & job applications", line: "Get the application in, properly." },
-  { id: "online", name: "Online forms & portals", line: "KRA, eCitizen and other sites, with someone beside you." },
-  { id: "study", name: "Students & parents", line: "Assignments, admissions and funding forms." },
-  { id: "business", name: "For businesses", line: "Bulk runs and everyday paperwork." },
-];
-
-export type Service = {
-  slug: string;
-  name: string;
-  category: CategoryId;
-  /** ≤ 90 chars — directory line & meta description lead */
-  short: string;
-  /** Page intro, 1–2 sentences */
-  intro: string;
-  includes: string[];
-  bring: string[];
-  goodToKnow: string[];
-  /** Pre-filled WhatsApp text (after "Hello Kelper, "). Never asks for sensitive data. */
-  whatsapp: string;
-  guide?: GuideSlug;
-  image?: ImageSlot;
-  /** Involves a government portal → show the independence note */
-  government?: boolean;
-  /** Requires machines the client must confirm (binding, lamination, A3, colour) */
-  needsEquipment?: boolean;
-  /** SEO title fragment */
+  /** Mono reference shown like a drawing number */
+  ref: string;
+  /** <title> (the layout template appends the company name) */
   seoTitle: string;
+  description: string;
+  /** One line for cards and the footer */
+  short: string;
+  /** Page headline */
+  headline: string;
+  intro: string;
+  image: ImageSlot;
+  imagePosition?: string;
+  forWho: { title: string; body: string }[];
+  scope: ScopeGroup[];
+  /** What to include in an enquiry */
+  enquiry: string[];
+  /** A plain statement of limits or legal context, shown as an aside */
+  note: { title: string; body: string };
+  whatsapp: string;
 };
 
-export const services: Service[] = [
+export const services: ServiceLine[] = [
   {
-    slug: "printing",
-    name: "Printing",
-    category: "print",
-    short: "Black & white or colour, from your phone, flash disk or WhatsApp.",
+    slug: "construction",
+    name: "Construction",
+    ref: "S-01",
+    seoTitle: "Construction & Renovation Contractor in Mombasa",
+    description:
+      "Building works, renovations and civil works in Mombasa. Send your drawings, bill of quantities or brief to Kelper Investments Ltd for a quotation.",
+    short: "Building works, renovations and external civil works, priced against your drawings or brief.",
+    headline: "Building works, renovations and site works.",
     intro:
-      "Send the file, tell us how many copies and how you want them, and collect them printed. Works for one page or a full report.",
-    includes: [
-      "Black & white and colour printing",
-      "Single- or double-sided",
-      "Documents, photos, tickets, forms and boarding passes",
-      "Printing straight from your phone or a flash disk",
+      "For homeowners, businesses and institutions with a project to build, extend or repair. Send your drawings, bill of quantities or a clear brief, and we'll come back with questions or a quotation.",
+    image: "construction",
+    imagePosition: "50% 30%",
+    forWho: [
+      { title: "Homeowners and developers", body: "Planning a new house, a rental block, an extension or an upgrade to an existing building." },
+      { title: "Businesses", body: "Fitting out, repairing or extending shops, offices, warehouses and other commercial premises." },
+      { title: "Schools, churches and institutions", body: "Classrooms, halls, ablution blocks, perimeter walls and planned maintenance." },
     ],
-    bring: [
-      "The file on your phone or a flash disk, or send it to us on WhatsApp",
-      "PDF is best: it keeps your layout exactly as it is",
+    scope: [
+      {
+        title: "Building works",
+        items: [
+          "New residential and commercial buildings to approved drawings",
+          "Extensions and alterations to existing buildings",
+          "Foundations, masonry, concrete frames and slabs",
+        ],
+      },
+      {
+        title: "Renovation and finishing",
+        items: [
+          "Plastering, screeding, tiling and painting",
+          "Roofing repairs and replacement",
+          "Ceilings, partitions, doors and windows",
+        ],
+      },
+      {
+        title: "External and civil works",
+        items: [
+          "Boundary walls and gates",
+          "Paving, cabro and driveways",
+          "Surface-water drainage and soakaways",
+        ],
+      },
     ],
-    goodToKnow: [
-      "Tell us page numbers if you don't need the whole document.",
-      "Use the print job builder to send all the details in one message.",
+    enquiry: [
+      "Where the site is (town and area)",
+      "What you want built or repaired, and roughly how big",
+      "Drawings, a bill of quantities, or photos of the existing building",
+      "Whether county approval has been obtained (for new buildings and extensions)",
+      "When you'd like work to start",
     ],
-    whatsapp: "I'd like to print a document. Can I send the file here?",
-    guide: "printing-files",
-    image: "printing",
-    seoTitle: "Printing in Mombasa: black & white and colour",
+    note: {
+      title: "Ask any contractor for their NCA certificate",
+      body: "In Kenya, construction contractors must be registered with the National Construction Authority, and the registration grade limits the size of contract they can take. Most new buildings and extensions also need county approval before work starts. Ask to see the certificate before you sign.",
+    },
+    whatsapp: "I'd like a quotation for construction work.",
   },
   {
-    slug: "photocopying",
-    name: "Photocopying",
-    category: "print",
-    short: "ID copies, certificates, notes and bulk copies of anything on paper.",
-    intro: "Bring the original and we'll copy it, whether it's one ID card or a class set of notes.",
-    includes: [
-      "National ID and Maisha card copies (both sides on one page)",
-      "Certificates, transcripts and letters",
-      "Bulk copies of notes, exam papers and forms",
-      "Reduce or enlarge to fit",
-    ],
-    bring: ["The original document", "How many copies you need"],
-    goodToKnow: [
-      "Copying your ID? Write what the copy is for across it (e.g. \"For HEF application only\") so it can't be reused.",
-    ],
-    whatsapp: "I need some photocopies. Can you help?",
-    image: "documents",
-    seoTitle: "Photocopying in Mombasa: ID copies, certificates & bulk",
-  },
-  {
-    slug: "scanning",
-    name: "Scanning & file fixes",
-    category: "print",
-    short: "Scan to PDF, merge pages, and shrink files to fit portal upload limits.",
+    slug: "engineering",
+    name: "Engineering Services",
+    ref: "S-02",
+    seoTitle: "Engineering Support & Installation Works, Mombasa",
+    description:
+      "Practical engineering support for building projects in Mombasa: site assessment, setting out, coordination with your professionals, and installation works.",
+    short: "Site assessment, setting out, coordination and installation works for building projects.",
+    headline: "Practical technical support, from site to installation.",
     intro:
-      "Many portals reject uploads that are too big or in the wrong format. We scan your papers and turn them into a clean PDF that fits the limit.",
-    includes: [
-      "Scan documents and photos to PDF or image",
-      "Merge several pages into one PDF",
-      "Convert Word ↔ PDF and photos → PDF",
-      "Compress files to a portal's size limit",
+      "Help with the technical side of a project: understanding what a building or site needs, setting out works accurately, coordinating with your architect, engineer and quantity surveyor, and carrying out installation works.",
+    image: "engineering",
+    imagePosition: "35% 40%",
+    forWho: [
+      { title: "Project owners", body: "Who need a clear picture of what a repair, upgrade or new build involves before committing to it." },
+      { title: "Developers and their consultants", body: "Needing a site team that works to the drawings and keeps the design team informed." },
+      { title: "Facilities and property managers", body: "Planning upgrades to water, drainage or steelwork on buildings they look after." },
     ],
-    bring: [
-      "The original papers",
-      "The upload limit, if the portal states one (e.g. \"PDF, max 2MB\")",
+    scope: [
+      {
+        title: "Site and technical support",
+        items: [
+          "Site visits and condition assessments to scope repairs and renovations",
+          "Setting out and levels for works on site",
+          "Site supervision and progress reporting against the programme",
+        ],
+      },
+      {
+        title: "Coordination",
+        items: [
+          "Working to your architect's and engineer's drawings and specifications",
+          "Pricing against designs and bills of quantities",
+          "Explaining which approvals and registered professionals a project needs",
+        ],
+      },
+      {
+        title: "Installation works",
+        items: [
+          "Water storage, plumbing and drainage installation",
+          "Steel fabrication and installation: gates, grilles and light frames",
+        ],
+      },
     ],
-    goodToKnow: [
-      "Scans are handed to you on your phone, flash disk or WhatsApp. Ask us to delete our copy when you're done.",
+    enquiry: [
+      "Where the building or site is",
+      "What the problem or requirement is, with photos if you have them",
+      "Any drawings, specifications or engineer's reports",
+      "Who else is involved (architect, engineer, quantity surveyor)",
+      "Your timeline",
     ],
-    whatsapp: "I need some documents scanned to PDF. Can you help?",
-    image: "documents",
-    seoTitle: "Scanning & PDF conversion in Mombasa",
+    note: {
+      title: "What this service does not include",
+      body: "Kenyan law reserves engineering design, structural calculations and the signing of engineering drawings or reports for engineers registered with the Engineers Board of Kenya. Where your project needs that work, it must be done by a registered professional, and we'll tell you when it does.",
+    },
+    whatsapp: "I'd like to discuss engineering support for a project.",
   },
   {
-    slug: "binding-lamination",
-    name: "Binding & lamination",
-    category: "print",
-    short: "Finish reports and protect certificates.",
-    intro: "Turn loose pages into a bound report, or protect a document you'll handle often.",
-    includes: ["Spiral binding for reports, projects and proposals", "Lamination for certificates, cards and notices"],
-    bring: ["The printed pages, or send the file and we'll print and bind"],
-    goodToKnow: [
-      "Don't laminate an original certificate you may need to have certified later. Laminate a copy instead.",
-    ],
-    whatsapp: "I'd like to ask about binding or lamination.",
-    needsEquipment: true,
-    image: "printing",
-    seoTitle: "Binding & lamination in Mombasa",
-  },
-  {
-    slug: "typing",
-    name: "Typing & formatting",
-    category: "documents",
-    short: "Handwritten notes, letters and reports typed and laid out properly.",
+    slug: "supplies",
+    name: "Supplies",
+    ref: "S-03",
+    seoTitle: "Building Materials & Construction Supplies, Mombasa",
+    description:
+      "Cement, steel, blocks, roofing, plumbing, hardware and site supplies in Mombasa, quoted against your materials list or bill of quantities.",
+    short: "Construction materials and site supplies, quoted to your specification, quantity and delivery point.",
+    headline: "Materials quoted to your list, specification and site.",
     intro:
-      "Give us your handwritten pages or a messy draft. We type it up, fix the layout and give it back ready to print or send.",
-    includes: [
-      "Typing from handwritten or printed pages",
-      "Official letters, applications and minutes",
-      "Reports, projects and proposals formatted with headings, page numbers and a contents page",
-      "Tables and simple forms",
+      "Send a materials list or bill of quantities with specifications and quantities. We'll confirm what we can supply, the price and the delivery timing for that order. There are no prices on this site, because material prices move and every order is quoted on its own.",
+    image: "supplies",
+    imagePosition: "50% 60%",
+    forWho: [
+      { title: "Contractors and fundis", body: "Buying materials for a site and wanting one quotation for the whole list." },
+      { title: "Owners managing their own build", body: "Who have a bill of quantities and need it priced and delivered in stages." },
+      { title: "Businesses and institutions", body: "Procuring supplies through a request for quotation or a tender." },
     ],
-    bring: ["Your handwritten pages or draft", "Any format your school or office requires"],
-    goodToKnow: ["Longer jobs take time. Ask on WhatsApp when you can collect."],
-    whatsapp: "I need a document typed. Can I send you what I have?",
-    image: "student",
-    seoTitle: "Typing & document formatting in Mombasa",
-  },
-  {
-    slug: "cv-writing",
-    name: "CVs & cover letters",
-    category: "careers",
-    short: "A clear, one-to-two-page CV and a cover letter written for the job.",
-    intro:
-      "We sit with you, get your experience down clearly, and lay it out so an employer can read it in a minute. Then we write a cover letter for the job you're applying for.",
-    includes: [
-      "New CV from scratch, or a rewrite of your old one",
-      "Cover letter for a specific job advert",
-      "Saved as Word and PDF so you can edit it later",
-      "Printing, if you need hard copies",
+    scope: [
+      {
+        title: "Structural materials",
+        items: [
+          "Cement",
+          "Reinforcement steel and mesh",
+          "Building blocks and machine-cut stone",
+          "Sand, ballast and aggregates",
+          "Timber for formwork and roofing",
+        ],
+      },
+      {
+        title: "Roofing and finishes",
+        items: ["Roofing sheets and accessories", "Tiles, paint and ceiling boards", "Doors, windows and ironmongery"],
+      },
+      {
+        title: "Plumbing, hardware and site supplies",
+        items: [
+          "Pipes, fittings and water tanks",
+          "Nails, binding wire, fixings and hand tools",
+          "PPE: helmets, boots, reflective vests and gloves",
+        ],
+      },
     ],
-    bring: [
-      "Your old CV, if you have one",
-      "Your certificates (or their names, years and grades)",
-      "Your work history: employers, dates and duties",
-      "The job advert",
-      "Two referees' names and contacts (ask them first)",
+    enquiry: [
+      "Each item with its specification or grade (for example cement class 42.5N, or Y12 high-yield bar)",
+      "Quantity and unit for each item",
+      "Delivery location, and any access limits for lorries",
+      "The date you need it on site, and whether delivery can be phased",
+      "Your bill of quantities, if you have one",
     ],
-    goodToKnow: ["We don't write false qualifications or experience. Employers check."],
-    whatsapp: "I'd like help with my CV.",
-    guide: "job-application",
-    image: "jobseeker",
-    seoTitle: "CV writing & cover letters in Mombasa",
-  },
-  {
-    slug: "job-applications",
-    name: "Online job applications",
-    category: "careers",
-    short: "Portal sign-ups, uploads and email applications, done right first time.",
-    intro:
-      "Government and company job portals can be fiddly. We help you register, fill in each section and upload your documents in the right format.",
-    includes: [
-      "Registering on job and recruitment portals",
-      "Filling application forms",
-      "Scanning and uploading certificates",
-      "Writing and sending email applications",
-    ],
-    bring: [
-      "Your CV and certificates",
-      "Your ID",
-      "Your email address, plus access to it on your phone",
-      "The job advert or link",
-    ],
-    goodToKnow: [
-      "You type your own passwords. We never need them.",
-      "Real employers don't charge for a job. Be careful with adverts that ask for money.",
-    ],
-    whatsapp: "I need help applying for a job online.",
-    guide: "job-application",
-    image: "jobseeker",
-    seoTitle: "Online job application help in Mombasa",
-  },
-  {
-    slug: "kra-services",
-    name: "KRA PIN & tax returns",
-    category: "online",
-    short: "Get a KRA PIN, file nil or employment returns, download certificates.",
-    intro:
-      "We help you through iTax step by step: registering a PIN, filing your annual return, or getting a compliance certificate.",
-    includes: [
-      "New KRA PIN registration (individuals)",
-      "Nil returns",
-      "Employment (P9) returns",
-      "Tax Compliance Certificate applications",
-      "iTax password reset through your email",
-    ],
-    bring: [
-      "Your National ID or Maisha card",
-      "Your phone, plus access to the email linked to iTax",
-      "Your P9 form if you're employed",
-    ],
-    goodToKnow: [
-      "KRA doesn't charge for PIN registration or filing. Any fee you pay us is for our assistance.",
-      "From the 2026 income year, nil returns are due by 31 January.",
-    ],
-    whatsapp: "I need help with KRA (PIN or returns).",
-    guide: "nil-returns",
-    government: true,
-    image: "phone",
-    seoTitle: "KRA PIN & nil returns help in Mombasa",
-  },
-  {
-    slug: "ecitizen",
-    name: "eCitizen applications",
-    category: "online",
-    short: "Passport forms, good conduct, birth certificates and appointments.",
-    intro:
-      "eCitizen covers hundreds of services. We help you find the right form, fill it in, pay through the portal and print what you need to take in.",
-    includes: [
-      "eCitizen account set-up",
-      "Passport application forms and appointment booking",
-      "Police clearance (certificate of good conduct) applications",
-      "Birth certificate applications",
-      "Printing forms, receipts and invoices",
-    ],
-    bring: [
-      "Your National ID or Maisha card",
-      "Your phone (for the eCitizen code)",
-      "Documents the service asks for: check the guide",
-    ],
-    goodToKnow: [
-      "Official fees are paid to the government through eCitizen. The agency decides on your application, not us.",
-    ],
-    whatsapp: "I need help with an eCitizen application.",
-    guide: "passport",
-    government: true,
-    image: "phone",
-    seoTitle: "eCitizen application help in Mombasa",
-  },
-  {
-    slug: "student-funding",
-    name: "HEF, HELB & KUCCPS",
-    category: "study",
-    short: "University placement and funding applications for students.",
-    intro:
-      "KUCCPS course choices and Higher Education Financing (HEF) applications open once a year and close on fixed dates. We help students and parents get them in correctly.",
-    includes: [
-      "KUCCPS course application and revision",
-      "HEF portal applications (scholarships and HELB loans)",
-      "Scanning and uploading supporting documents",
-      "Printing admission letters and forms",
-    ],
-    bring: [
-      "KCSE (and KCPE) index numbers and exam years",
-      "Student's ID or Maisha card, if 18 or over",
-      "Admission number and letter",
-      "Parents' and two guarantors' ID numbers and phone numbers",
-    ],
-    goodToKnow: [
-      "Funding results are decided by the HEF/HELB system, not by us.",
-      "The phone number must be registered in the student's own name.",
-    ],
-    whatsapp: "I need help with a KUCCPS / HEF (HELB) application.",
-    guide: "hef-funding",
-    government: true,
-    image: "student",
-    seoTitle: "HELB, HEF & KUCCPS application help in Mombasa",
-  },
-  {
-    slug: "school-printing",
-    name: "School assignments & research",
-    category: "study",
-    short: "Find, format and print what the teacher asked for.",
-    intro:
-      "Got a homework sheet that says \"research and print\"? Bring it. We'll help find suitable material, format it and print it.",
-    includes: [
-      "Researching and printing assignment material",
-      "Printing pictures for projects and charts",
-      "Typing and printing school projects",
-    ],
-    bring: ["The assignment sheet or a photo of it", "Any notes from the teacher"],
-    goodToKnow: ["Colour prints cost more than black & white. Tell us which you'd prefer."],
-    whatsapp: "I need help with my child's school assignment (research and printing).",
-    image: "student",
-    seoTitle: "School assignment printing & research in Mombasa",
-  },
-  {
-    slug: "business-printing",
-    name: "Bulk & business printing",
-    category: "business",
-    short: "Price lists, menus, flyers, invoices and notices, in quantity.",
-    intro:
-      "For shops, offices, churches and schools nearby: send what you need printed and how many, and we'll confirm a quote before we start.",
-    includes: [
-      "Bulk black & white and colour runs",
-      "Price lists, menus, notices and flyers",
-      "Typing up invoices, receipts and letterheads",
-      "Repeat orders: send the same file again any time",
-    ],
-    bring: ["Your file, or a sample of what you want", "Quantity and paper size", "When you need it"],
-    goodToKnow: ["Large orders are quoted before printing. Nothing runs until you've agreed the price."],
-    whatsapp: "I'd like a quote for bulk printing for my business.",
-    image: "business",
-    seoTitle: "Bulk & business printing in Mombasa",
-  },
-  {
-    slug: "computer-internet",
-    name: "Computer & internet use",
-    category: "business",
-    short: "A computer and a connection when you need one, with help if you want it.",
-    intro: "Need a proper screen and keyboard for an hour? Use one of our computers, and ask for a hand if you get stuck.",
-    includes: ["Browsing, email and online forms", "Typing your own documents", "Help on hand if you need it"],
-    bring: ["Your flash disk, if you're saving work", "Your own login details: we never ask for them"],
-    goodToKnow: ["Always log out of your email and portals before you leave a shared computer."],
-    whatsapp: "do you have a computer free to use?",
-    image: "hero",
-    seoTitle: "Computer & internet access in Mombasa",
+    note: {
+      title: "Specify the standard, not just the item",
+      body: "Kenya Bureau of Standards (KEBS) standards cover cement, reinforcement steel, roofing sheets and blocks. State the grade or standard you need on your list. We quote against that specification and say clearly if we propose an alternative.",
+    },
+    whatsapp: "I'd like a quotation for materials.",
   },
 ];
 
 export const serviceBySlug = (slug: string) => services.find((s) => s.slug === slug);
-
-export const servicesInCategory = (id: CategoryId) => services.filter((s) => s.category === id);

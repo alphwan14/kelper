@@ -11,28 +11,26 @@ export function pageMetadata({
   description,
   path,
   socialTitle,
-  type = "website",
 }: {
   title?: string;
   description: string;
   path: string;
   socialTitle?: string;
-  type?: "website" | "article";
 }): Metadata {
-  const ogTitle = socialTitle ?? (title ? `${title} · ${business.name} ${business.city}` : undefined);
+  const ogTitle = socialTitle ?? (title ? `${title} | ${business.legalName}` : `${business.legalName}: ${business.descriptor}`);
   return {
     ...(title ? { title } : {}),
     description,
     alternates: { canonical: path },
     openGraph: {
-      type,
+      type: "website",
       url: path,
-      siteName: business.name,
+      siteName: business.legalName,
       locale: "en_KE",
-      ...(ogTitle ? { title: ogTitle } : {}),
+      title: ogTitle,
       description,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${business.name}, ${business.city}: paperwork, sorted.` }],
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${business.legalName}: ${business.descriptor}` }],
     },
-    twitter: { card: "summary_large_image", ...(ogTitle ? { title: ogTitle } : {}), description },
+    twitter: { card: "summary_large_image", title: ogTitle, description },
   };
 }

@@ -1,10 +1,22 @@
-# Kelper: kelper.co.ke
+# Kelper Investments Ltd: kelper.co.ke
 
-Website for **Kelper**, a cybercafé and document-services business in Mombasa: printing, typing, CVs, and help with KRA, eCitizen and HEF/KUCCPS applications.
+Website for **Kelper Investments Ltd**, which offers construction, engineering services and supplies in Mombasa, Kenya.
 
-Built with Next.js 16 (App Router, Cache Components), TypeScript (strict) and Tailwind CSS v4. Every route is prerendered as static output, enforced by `ensureStatic = "navigation"` in the root layout. There is no database, no backend, and no environment variables.
+## Stack
 
-Research, positioning and design decisions are in [`docs/kelper-research.md`](docs/kelper-research.md).
+- **Framework:** Next.js 16 (App Router, Cache Components), TypeScript (strict) and Tailwind CSS v4.
+- **Rendering:** Every page is prerendered as static output, enforced by `ensureStatic = "navigation"` in the root layout.
+- **Proxy:** The only runtime code is `src/proxy.ts`, which answers retired cybercafé URLs with `410 Gone`.
+- **Backend:** There is no database, no backend and no form submission server. The quotation request builds a WhatsApp message in the browser.
+
+## Docs
+
+| Document | What it covers |
+|---|---|
+| [`docs/research.md`](docs/research.md) | Market and regulatory research, positioning decisions |
+| [`docs/owner-questions.md`](docs/owner-questions.md) | **What must be confirmed before launch** |
+| [`docs/seo-checklist.md`](docs/seo-checklist.md) | SEO changes and the post-deploy Search Console steps |
+| [`docs/brand.md`](docs/brand.md) | Logo files, colours, type, photography |
 
 ## Run it
 
@@ -13,6 +25,8 @@ npm install
 npm run dev        # http://localhost:3000
 npm run check      # typecheck + lint + production build
 npm run build && npm start
+npm run smoke      # route, SEO and content checks against http://localhost:3000
+npm run smoke -- https://kelper.co.ke   # the same checks against production
 ```
 
 Requires Node.js 20.9 or later.
@@ -21,41 +35,26 @@ Requires Node.js 20.9 or later.
 
 | What | File |
 | --- | --- |
-| **Business facts** (phone, address, hours, email, map) | `src/config/business.ts` |
-| Services (names, copy, what to bring, WhatsApp text) | `src/content/services.ts` |
-| "What to bring" checklists (with sources and check dates) | `src/content/guides.ts` |
-| Home-page task finder entries | `src/content/tasks.ts` |
-| Photos and licences | `public/images/`, `src/content/image-credits.json`, `src/content/images.ts` |
-| Design tokens and motifs (ticket, crop marks, marker, stamp) | `src/app/globals.css` |
+| **Business facts** (name, phone, email switch, address, credentials) | `src/config/business.ts` |
+| Service lines (scope, who it's for, what to send, notes) | `src/content/services.ts` |
+| Navigation | `src/content/nav.ts` |
+| Quotation request builder | `src/components/quote-builder.tsx` |
+| Photos and licences | `public/images/`, `src/content/image-credits.json` |
+| Logo files | `public/brand/` (the in-page mark is `src/components/wordmark.tsx`) |
+| Design tokens and motifs | `src/app/globals.css` |
+| Structured data | `src/lib/schema.ts` |
+| Retired URLs (410) | `src/proxy.ts` |
 
 ### Adding confirmed business details
 
-Fill in the `null` fields in `src/config/business.ts`. The site picks them up automatically:
+Fill in the blank fields in `src/config/business.ts`. Never put a guess in them: a blank is hidden on the site, but a wrong licence grade or address is published. The site updates itself:
 
-- `streetAddress`, `landmark`: shown in the footer, the home page and `/contact`, and added to structured data.
-- `mapUrl`: adds "Open in Google Maps" links, replacing "Ask for a location pin".
-- `hours`: shows opening hours, replacing "Ask what time we're open", and adds `openingHoursSpecification` to structured data.
-- `geo`, `email`, `socials`: added where relevant.
+- **`email.active`:** Set it to `true` only after `info@kelper.co.ke` has been tested end to end. It shows the address on the site and adds an Email button to the quotation form.
+- **`credentials`:** Use exact text from certificates, for example NCA grade and class. Shown on /about.
+- **`streetAddress`, `mapUrl`, `postalAddress`, `hours`, `areaServed`, `socials`:** Shown where relevant and added to structured data.
 
-Never put a guess in these fields. A blank is handled gracefully; a wrong fact is not.
+## Deploy
 
-### Changing services or guides
-
-Edit the arrays in `src/content/`. Service and guide pages, the sitemap, the footer and the task finder all update from the same data. Guide facts change, so update each guide's `checked` date when you review it.
-
-## Deploy to Vercel
-
-1. Push this folder to a Git repository (GitHub, GitLab or Bitbucket).
-2. In Vercel: **Add New → Project**, import the repo. Vercel detects Next.js; no build settings or environment variables are needed.
-3. Deploy, then open the `*.vercel.app` preview and check it.
-4. **Settings → Domains**: add `kelper.co.ke` and `www.kelper.co.ke`, and set the apex as primary so `www` redirects to it.
-5. At the `.co.ke` registrar, set the DNS records Vercel shows (typically an `A` record for the apex and a `CNAME` for `www`). Propagation can take a few hours.
-6. After the domain is live, submit `https://kelper.co.ke/sitemap.xml` in Google Search Console and create or claim a Google Business Profile for the shop. Local search relies heavily on it.
-
-Or from the CLI: `npx vercel` (preview) and `npx vercel --prod`.
-
-**Status (9 Oct 2026):** not deployed yet. `kelper.co.ke` does not resolve in DNS.
-
-## Before launch: confirm with the client
-
-See the checklist at the end of `docs/kelper-research.md`.
+- **How it deploys:** The Vercel project `kelper` is linked to `github.com/alphwan14/kelper`, so pushing `main` deploys to production. Preview first by pushing a branch, or run `npx vercel` for a preview deployment.
+- **Domains:** `kelper.co.ke` and `www` are configured in Vercel. DNS is on Cloudflare. A code deploy needs no DNS changes.
+- **After deploying:** Follow [`docs/seo-checklist.md`](docs/seo-checklist.md).

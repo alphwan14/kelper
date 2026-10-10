@@ -25,8 +25,8 @@ export default function CreditsPage() {
         title="Photo credits"
         intro={
           <p>
-            The photographs on this site are licensed stock images by the photographers below. They don&rsquo;t show
-            Kelper&rsquo;s premises, staff or customers.
+            The photographs on this site are illustrative, licensed stock images by the photographers below. They are not
+            Kelper Investments Ltd&rsquo;s projects, sites, staff or equipment.
           </p>
         }
       />
@@ -34,7 +34,7 @@ export default function CreditsPage() {
         <ul className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {stockImages.map((img) => (
             <li key={img.file}>
-              <div className="relative aspect-[4/3] overflow-hidden bg-stone">
+              <div className="relative aspect-[4/3] overflow-hidden bg-concrete">
                 <Image src={img.file} alt={img.alt} fill sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw" className="object-cover" />
               </div>
               <p className="mt-3 font-semibold">{img.photographer}</p>

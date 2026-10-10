@@ -40,14 +40,6 @@ export function ArrowIcon(props: IconProps) {
   );
 }
 
-export function ArrowDownIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M12 5v14M6 13l6 6 6-6" />
-    </svg>
-  );
-}
-
 export function ChevronIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
@@ -60,14 +52,6 @@ export function CheckIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <path d="M5 12.5l4.5 4.5L19 7.5" />
-    </svg>
-  );
-}
-
-export function ExternalIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
     </svg>
   );
 }
@@ -88,20 +72,27 @@ export function CloseIcon(props: IconProps) {
   );
 }
 
-export function PrinterIcon(props: IconProps) {
+export function PlusIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
-      <path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2" />
-      <path d="M7 14h10v7H7z" />
+      <path d="M12 5v14M5 12h14" />
     </svg>
   );
 }
 
-export function PinIcon(props: IconProps) {
+export function TrashIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
-      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
-      <circle cx="12" cy="9.5" r="2.5" />
+      <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+    </svg>
+  );
+}
+
+export function MailIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="1.5" />
+      <path d="M3.5 6l8.5 7 8.5-7" />
     </svg>
   );
 }

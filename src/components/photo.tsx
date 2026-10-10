@@ -10,34 +10,31 @@ type PhotoProps = {
   /** CSS object-position, for art-directed crops */
   position?: string;
   className?: string;
-  crop?: boolean;
-  lightCrop?: boolean;
+  /** Mono caption set on a dimension line under the photo */
+  dimension?: string;
 };
 
-/** Art-directed photo with optional printer's crop marks. */
-export function Photo({
-  image,
-  aspect = "aspect-[4/3]",
-  sizes,
-  preload = false,
-  position = "50% 50%",
-  className = "",
-  crop = true,
-  lightCrop = false,
-}: PhotoProps) {
+/** Art-directed photo, optionally annotated with a drawing-style dimension line. */
+export function Photo({ image, aspect = "aspect-[4/3]", sizes, preload = false, position = "50% 50%", className = "", dimension }: PhotoProps) {
   return (
-    <div className={`${crop ? "crop" : ""} ${lightCrop ? "crop-light" : ""} ${className}`}>
-      <div className={`relative overflow-hidden bg-stone ${aspect}`}>
+    <figure className={className}>
+      <div className={`relative overflow-hidden bg-concrete ${aspect}`}>
         <Image
           src={image.file}
           alt={image.alt}
           fill
           sizes={sizes}
           preload={preload}
+          quality={70}
           className="object-cover"
           style={{ objectPosition: position }}
         />
       </div>
-    </div>
+      {dimension ? (
+        <figcaption className="dimension mt-3" aria-hidden="true">
+          {dimension}
+        </figcaption>
+      ) : null}
+    </figure>
   );
 }

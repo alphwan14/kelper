@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
-import { WhatsAppAction } from "@/components/actions";
+import { QuoteAction } from "@/components/actions";
 import { ArrowIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageIntro } from "@/components/page-intro";
+import { Photo } from "@/components/photo";
 import { business } from "@/config/business";
-import { categories, servicesInCategory } from "@/content/services";
+import { imageFor } from "@/content/images";
+import { services } from "@/content/services";
+import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Services: printing, typing, CVs & online forms",
-  description: `Everything at the ${business.name} counter in ${business.city}: printing, photocopying, scanning, typing, CVs, KRA, eCitizen, HEF/KUCCPS and bulk printing.`,
+  title: "Services: Construction, Engineering & Supplies in Mombasa",
+  description: `${business.legalName} services in ${business.city}: building works and renovations, engineering support and installation works, and construction materials supply.`,
   path: "/services",
 });
 
@@ -24,43 +26,41 @@ export default function ServicesPage() {
           { name: "Services", href: "/services" },
         ]}
         kicker={`Services · ${business.city}`}
-        title="Everything at the counter."
-        intro="Grouped by what you're trying to get done. Every service page tells you what to bring and how to start."
+        title={business.descriptor}
+        intro={<p>Three service lines that can be quoted separately or together. Each page sets out the scope, who it&rsquo;s for, and what to send for a quotation.</p>}
       />
 
       <div className="mx-auto max-w-7xl px-4 py-14 md:px-8 md:py-20">
-        <div className="space-y-16">
-          {categories.map((cat, ci) => (
-            <section key={cat.id} aria-labelledby={`cat-${cat.id}`} className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:gap-14">
-              <div>
-                <p className="label">{String.fromCharCode(65 + ci)}</p>
-                <h2 id={`cat-${cat.id}`} className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">
-                  {cat.name}
+        <ul className="grid gap-12 md:grid-cols-3 md:gap-8">
+          {services.map((s) => (
+            <li key={s.slug}>
+              <Link href={`/services/${s.slug}`} className="group block">
+                <Photo image={imageFor(s.image)} aspect="aspect-[4/3]" sizes="(min-width: 768px) 30vw, 100vw" position={s.imagePosition} />
+                <p className="label mt-5">{s.ref}</p>
+                <h2 className="mt-2 flex items-center justify-between gap-4 text-3xl font-extrabold tracking-tight group-hover:underline group-hover:decoration-signal group-hover:decoration-2 group-hover:underline-offset-6">
+                  {s.name}
+                  <ArrowIcon className="h-6 w-6 shrink-0 text-signal-ink transition-transform group-hover:translate-x-1" />
                 </h2>
-                <p className="mt-2 text-ink-3">{cat.line}</p>
-              </div>
-              <ul>
-                {servicesInCategory(cat.id).map((s) => (
-                  <li key={s.slug} className="index-row">
-                    <Link href={`/services/${s.slug}`} className="group grid grid-cols-[1fr_auto] items-start gap-4 py-5">
-                      <span>
-                        <span className="block text-xl font-bold tracking-tight group-hover:underline group-hover:decoration-marker group-hover:decoration-[3px] group-hover:underline-offset-4">
-                          {s.name}
-                        </span>
-                        <span className="mt-1 block text-ink-2">{s.short}</span>
-                      </span>
-                      <ArrowIcon className="mt-1.5 h-5 w-5 text-ink/40 transition-transform group-hover:translate-x-1 group-hover:text-ink" />
-                    </Link>
+                <p className="mt-2 text-ink-2">{s.short}</p>
+              </Link>
+              <ul className="mt-5">
+                {s.scope.map((g) => (
+                  <li key={g.title} className="index-row flex items-center gap-3 py-2.5 text-[0.95rem]">
+                    <span className="datum" aria-hidden="true" />
+                    {g.title}
                   </li>
                 ))}
               </ul>
-            </section>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        <div className="mt-20 flex flex-col items-start gap-5 border-t-2 border-ink pt-8 md:flex-row md:items-center md:justify-between">
-          <p className="font-display text-2xl font-bold tracking-tight md:text-3xl">Don&rsquo;t see what you need?</p>
-          <WhatsAppAction message="do you offer a service that isn't on your website? I need help with: ">Ask us on WhatsApp</WhatsAppAction>
+        <div className="mt-20 flex flex-col items-start gap-6 border border-ink bg-paper p-6 md:flex-row md:items-center md:justify-between md:p-8">
+          <div>
+            <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">Not sure which service fits?</h2>
+            <p className="mt-2 max-w-xl text-ink-2">Describe the project in the quotation request and choose &ldquo;Not sure&rdquo;. We&rsquo;ll route it.</p>
+          </div>
+          <QuoteAction />
         </div>
       </div>
 

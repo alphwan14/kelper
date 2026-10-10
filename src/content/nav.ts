@@ -1,6 +1,9 @@
 export const primaryNav = [
-  { href: "/services", label: "Services" },
-  { href: "/print", label: "Send a print job" },
-  { href: "/prepare", label: "What to bring" },
-  { href: "/contact", label: "Find us" },
+  { href: "/services/construction", label: "Construction" },
+  { href: "/services/engineering", label: "Engineering" },
+  { href: "/services/supplies", label: "Supplies" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ] as const;
+
+export const quoteHref = "/quote";
